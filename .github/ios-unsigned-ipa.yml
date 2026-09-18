@@ -1,3 +1,4 @@
+```yaml
 name: Build unsigned iOS IPA
 
 on:
@@ -22,11 +23,21 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: Make build script executable
+        run: chmod +x build_unsigned.sh build_esign_ready_ipa.sh
+
       - name: Build unsigned IPA
         run: ./build_unsigned.sh
 
       - name: Verify eSign-ready package
-        run: ./build_esign_ready_ipa.sh build/HYper-Regedit-Key-Enabled-unsigned.ipa
+        run: |
+          ./build_esign_ready_ipa.sh \
+            build/HYper-Regedit-Key-Enabled-unsigned.ipa
+
+      - name: Check generated IPA
+        run: |
+          ls -lh build/
+          test -f build/HYper-Regedit-Key-Enabled-unsigned.ipa
 
       - name: Upload unsigned IPA
         uses: actions/upload-artifact@v4
@@ -34,3 +45,4 @@ jobs:
           name: HYper-Regedit-Key-Enabled-unsigned-ipa
           path: build/HYper-Regedit-Key-Enabled-unsigned.ipa
           if-no-files-found: error
+```
